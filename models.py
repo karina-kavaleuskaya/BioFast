@@ -1,6 +1,6 @@
-from sync_db import Base
+from db.sync_db import Base
 from sqlalchemy import (Column, Integer, String,
-                        TIMESTAMP, text, ForeignKey, Boolean)
+                        ForeignKey, Boolean)
 from sqlalchemy.orm import relationship
 
 
