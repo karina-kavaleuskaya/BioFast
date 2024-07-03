@@ -1,6 +1,10 @@
 import os
 from fastapi import UploadFile, HTTPException
 import aiofiles
+import aiohttp
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class FileManager:
@@ -20,15 +24,29 @@ class FileManager:
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Could not save file: {str(e)}")
 
-    async def get_file(self, file_path: str) -> bytes:
-        full_path = os.path.join(self.base_directory, file_path)
+    async def get_file(self, container_id: str, file_name: str) -> bytes:
+        logger.info(f"Attempting to get file: container_id={container_id}, file_name={file_name}")
+
+        user_directory = os.path.join(self.base_directory)
+        file_base_name = os.path.splitext(file_name)[0]
+        full_path = os.path.join(user_directory, f"{file_base_name}_analysis.txt")
+
+        logger.debug(f"Full file path: {full_path}")
+
+
         if not os.path.exists(full_path):
+            logger.warning(f"File not found: {full_path}")
             raise HTTPException(status_code=404, detail="File not found")
+
         try:
+            logger.debug(f"Opening file: {full_path}")
             async with aiofiles.open(full_path, 'rb') as file:
+                logger.debug(f"Reading file: {full_path}")
                 return await file.read()
         except Exception as e:
+            logger.error(f"Error reading file: {full_path}, {str(e)}")
             raise HTTPException(status_code=500, detail=f"Could not read file: {str(e)}")
+
 
 
 FILE_MANAGER = FileManager(base_directory="static/containers")

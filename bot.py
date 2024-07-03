@@ -89,12 +89,13 @@ async def process_sequences(sequences):
         # Trim sequence to make it a multiple of three
         trimmed_sequence = dna_sequence[:len(dna_sequence) - (len(dna_sequence) % 3)]
         # Translate all six frames and create BLAST tasks
-        for frame in range(5):
+        for frame in range(6):
             frame_sequence = trimmed_sequence[frame:]
             protein_sequence = frame_sequence.translate(table=genetic_code, to_stop=False)
             tasks.append(blast_search(protein_sequence))
             print('One Frame done')
     return await asyncio.gather(*tasks)
+
 
 def find_fast_files(directory):
     fast_files = []
@@ -104,9 +105,11 @@ def find_fast_files(directory):
                 fast_files.append(os.path.join(root, file))
     return fast_files
 
+
 def create_analysis_file(fast_file):
     analysis_file = os.path.splitext(fast_file)[0] + "_analysis.txt"
     return analysis_file
+
 
 async def run_analysis():
     directory = "static/containers"
@@ -143,6 +146,7 @@ async def main():
     while True:
         await run_analysis()
         await asyncio.sleep(300)  # Wait 5 minutes before checking again
+
 
 if __name__ == "__main__":
     asyncio.run(main())
