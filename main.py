@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 from fastapi.security import OAuth2PasswordBearer
-from async_db import get_db
+from db.async_db import get_db
 from facade.container_facade import container_facade
-import users
-import admin
+from routers import admin, auth, containers
 
 
 def set_db_for_facades(db):
@@ -22,8 +21,9 @@ async def startup_event():
         break
 
 
-app.include_router(users.router)
+app.include_router(auth.router)
 app.include_router(admin.router)
+app.include_router(containers.router)
 
 
 

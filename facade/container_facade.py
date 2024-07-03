@@ -1,7 +1,7 @@
 import models
 from facade.base_facade import BaseFacade
-from fastapi import HTTPException, status
-import schemas
+from fastapi import HTTPException
+from schemas import auth, containers
 from sqlalchemy.future import select
 from typing import List
 
@@ -24,7 +24,7 @@ class ContainerFacade(BaseFacade):
             raise HTTPException(status_code=404, detail="Container not found")
         return container
 
-    async def get_containers_by_user(self, user_id: int) -> List[schemas.Container]:
+    async def get_containers_by_user(self, user_id: int) -> List[containers.Container]:
         async with self.db as session:
             containers = (
                 await session.execute(
