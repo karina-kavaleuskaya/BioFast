@@ -2,7 +2,7 @@ import models
 import os
 from schemas import auth
 from typing import List
-from auth import get_current_user
+from services.auth import get_current_user
 from fastapi import HTTPException, Depends, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 from db.async_db import get_db
