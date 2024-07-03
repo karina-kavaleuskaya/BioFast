@@ -13,6 +13,9 @@ from facade.file_facade import FILE_MANAGER
 from facade.container_facade import container_facade
 from pathlib import Path
 import os
+from services.auth import get_current_user
+
+
 
 
 
@@ -27,6 +30,8 @@ router = APIRouter(
     tags=['Containers']
 )
 
+UPLOAD_DIRECTORY = 'static/containers/'
+Path(UPLOAD_DIRECTORY).mkdir(parents=True, exist_ok=True)
 
 @router.post('/add-file/', response_model=containers.ContainerCreate)
 async def create_container(
