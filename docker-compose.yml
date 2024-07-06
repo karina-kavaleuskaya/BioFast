@@ -5,6 +5,9 @@ services:
     command: >
       sh -c "
           sleep 10 &&  
+          alembic init alembic &&
+          alembic revision --autogenerate -m "Create table"&&
+          alembic upgrade head&&
           uvicorn main:app --reload"
     build: .
     volumes:
@@ -26,7 +29,7 @@ services:
 
   bot:
     build: .
-    command: python /app/services/bot.py
+    command: python /app/services/bioinformatic_part.py
     volumes:
       - .:/app
 
