@@ -28,7 +28,7 @@ services:
 
   bot:
     build: .
-    command: python /app/services/bioinformatic_part.py
+    command: python /app/bioinformatic_part.py
     volumes:
       - .:/app
 
