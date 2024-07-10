@@ -19,6 +19,7 @@ router = APIRouter(
 
 @router.get('/users/', response_model=List[auth.UserWithFiles])
 async def get_users(
+    name: str | None = None,
     current_user: models.User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
@@ -26,17 +27,25 @@ async def get_users(
         raise HTTPException(status_code=403, detail="Only admins can access this endpoint.")
 
     async with db:
-        result = await db.execute(select(models.User))
+        query = select(models.User)
+
+        if name is not None:
+            query = query.filter(
+                models.User.email.ilike(f'%{name}%')
+            )
+
+        result = await db.execute(query)
         users = result.scalars().all()
 
-    result = []
+    response = []
     for user in users:
         user_dir = f'static/containers/{user.id}/'
         if os.path.exists(user_dir):
             files = os.listdir(user_dir)
         else:
             files = []
-        result.append(auth.UserWithFiles(id=user.id, email=user.email, files=files))
-    return result
+        response.append(auth.UserWithFiles(id=user.id, email=user.email, files=files))
+
+    return response
 
 

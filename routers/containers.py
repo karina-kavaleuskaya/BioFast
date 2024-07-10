@@ -64,6 +64,13 @@ async def download_files(container_id: int,
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Container not found')
         else:
             raise e
+    try:
+        int(container_id)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='Container ID must be a valid number'
+        )
 
     if container.user_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
